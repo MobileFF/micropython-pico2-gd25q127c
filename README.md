@@ -147,7 +147,8 @@ used on RP2350.
 
 - [x] Diagnostic build (37.5MHz + GD25Q127C boot2) boots on real hardware
 - [x] This board definition builds out-of-tree via `BOARD_DIR`
-- [ ] Release build verified on real hardware (14MB filesystem)
+- [x] Release build verified on real hardware: boots, 14MB filesystem, and
+      the flash does not wrap at 4/8/12MB (the full 16MB is present)
 - [ ] Faster flash clocks (e.g. 150MHz / 3 = 50MHz)
 - [ ] RISC-V variant (`./build.sh ../micropython RISCV`)
 
