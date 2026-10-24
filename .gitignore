@@ -1,0 +1,4 @@
+*.uf2
+*.elf
+*.bin
+build*/

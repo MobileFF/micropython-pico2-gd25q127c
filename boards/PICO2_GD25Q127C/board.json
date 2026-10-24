@@ -1,0 +1,20 @@
+{
+    "deploy": [
+        "../deploy.md"
+    ],
+    "docs": "",
+    "features": [
+        "Dual-core",
+        "External Flash",
+        "USB"
+    ],
+    "images": [],
+    "mcu": "rp2350",
+    "product": "Pico 2 compatible (GD25Q127C 16MB)",
+    "thumbnail": "",
+    "url": "",
+    "variants": {
+        "RISCV": "RISC-V CPU mode"
+    },
+    "vendor": "Generic"
+}
