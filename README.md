@@ -152,13 +152,19 @@ used on RP2350.
 
 ## Other boards (experimental)
 
-Other RP2350 boards may fail to boot MicroPython for the same reason (a flash chip that is
-not reliable at 75MHz) without having 16MB of flash. For those, the safe experiment is the
-board's own MicroPython definition with only the flash clock lowered, keeping its flash size.
+Other RP2350 boards can fail to boot MicroPython for similar timing reasons without having
+16MB of flash: a flash chip that is not reliable at 75MHz, or a crystal oscillator that
+starts more slowly than the SDK waits for (then the board boots right after flashing or a
+software reset, but not after a power cycle or the reset button). The safe experiment is the
+board's own MicroPython definition with just one setting changed, keeping its flash size.
 
 | Board | Board definition | Test UF2 | Result |
 |---|---|---|---|
-| Cytron MOTION 2350 Pro (REV 2.0) | [`experimental/CYTRON_MOTION_2350_PRO_SLOWFLASH`](experimental/CYTRON_MOTION_2350_PRO_SLOWFLASH) — MicroPython's `CYTRON_MOTION_2350_PRO` with the flash clock at 37.5MHz (4MB flash / 1MB filesystem as in the official definition) | [cytron-test1](https://github.com/MobileFF/micropython-pico2-gd25q127c/releases/tag/cytron-test1) | waiting for a report |
+| Cytron MOTION 2350 Pro (REV 2.0) | [`experimental/CYTRON_MOTION_2350_PRO_SLOWFLASH`](experimental/CYTRON_MOTION_2350_PRO_SLOWFLASH) — MicroPython's `CYTRON_MOTION_2350_PRO` with the flash clock at 37.5MHz (4MB flash / 1MB filesystem as in the official definition) | [cytron-test1](https://github.com/MobileFF/micropython-pico2-gd25q127c/releases/tag/cytron-test1) | ✗ boots after flashing, not after a power cycle or reset button — the flash clock is not the cause on this board |
+| Cytron MOTION 2350 Pro (REV 2.0) | [`experimental/CYTRON_MOTION_2350_PRO_SLOWXOSC`](experimental/CYTRON_MOTION_2350_PRO_SLOWXOSC) — MicroPython's `CYTRON_MOTION_2350_PRO` with the crystal startup delay at x64 (as CircuitPython uses for this board); flash clock 75MHz | [cytron-test2](https://github.com/MobileFF/micropython-pico2-gd25q127c/releases/tag/cytron-test2) | waiting for a report |
+
+Note: CircuitPython lists this board's flash as a 2MB W25Q16JV, while MicroPython's official
+definition assumes 4MB.
 
 Build one the same way as the main board:
 

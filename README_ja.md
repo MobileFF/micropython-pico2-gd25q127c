@@ -145,14 +145,20 @@ import os; s = os.statvfs('/'); print(s[0] * s[2] // 1024)
 
 ## ほかのボード（実験的）
 
-16MB のフラッシュを持たないほかの RP2350 ボードでも、同じ理由（75MHz では安定しない
-フラッシュチップ）で MicroPython が起動しないことがあります。その場合に安全に試せるのは、
-そのボード用の MicroPython のボード定義で、フラッシュの容量はそのままにクロックだけを
-下げたものです。
+16MB のフラッシュを持たないほかの RP2350 ボードでも、似たようなタイミングの理由で
+MicroPython が起動しないことがあります。75MHz では安定しないフラッシュチップや、SDK の
+待ち時間より起動の遅い水晶発振子です（後者の場合、書き込み直後やソフトウェアからの
+リセットでは起動するのに、電源の入れ直しやリセットボタンの後は起動しません）。安全に
+試せるのは、そのボード用の MicroPython のボード定義で、フラッシュの容量はそのままに
+設定を1つだけ変えたものです。
 
 | ボード | ボード定義 | テスト用 UF2 | 結果 |
 |---|---|---|---|
-| Cytron MOTION 2350 Pro（REV 2.0） | [`experimental/CYTRON_MOTION_2350_PRO_SLOWFLASH`](experimental/CYTRON_MOTION_2350_PRO_SLOWFLASH) — MicroPython の `CYTRON_MOTION_2350_PRO` のフラッシュのクロックを 37.5MHz にしたもの（フラッシュ 4MB／ファイルシステム 1MB は公式のまま） | [cytron-test1](https://github.com/MobileFF/micropython-pico2-gd25q127c/releases/tag/cytron-test1) | 報告待ち |
+| Cytron MOTION 2350 Pro（REV 2.0） | [`experimental/CYTRON_MOTION_2350_PRO_SLOWFLASH`](experimental/CYTRON_MOTION_2350_PRO_SLOWFLASH) — MicroPython の `CYTRON_MOTION_2350_PRO` のフラッシュのクロックを 37.5MHz にしたもの（フラッシュ 4MB／ファイルシステム 1MB は公式のまま） | [cytron-test1](https://github.com/MobileFF/micropython-pico2-gd25q127c/releases/tag/cytron-test1) | ✗ 書き込み直後は起動するが、電源の入れ直しやリセットボタンの後は起動しない（このボードではクロックは原因ではない） |
+| Cytron MOTION 2350 Pro（REV 2.0） | [`experimental/CYTRON_MOTION_2350_PRO_SLOWXOSC`](experimental/CYTRON_MOTION_2350_PRO_SLOWXOSC) — MicroPython の `CYTRON_MOTION_2350_PRO` の水晶の起動待ちを 64 倍にしたもの（CircuitPython がこのボードで使っている値）。フラッシュのクロックは 75MHz | [cytron-test2](https://github.com/MobileFF/micropython-pico2-gd25q127c/releases/tag/cytron-test2) | 報告待ち |
+
+注: CircuitPython ではこのボードのフラッシュは 2MB の W25Q16JV となっていますが、
+MicroPython の公式のボード定義は 4MB とみなしています。
 
 ビルドの方法はメインのボードと同じです。
 
