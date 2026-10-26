@@ -94,6 +94,13 @@ Tested with MicroPython v1.29.0-preview.
 
 ## Install
 
+> [!WARNING]
+> Only use this firmware on a board that really has **16MB** of flash (check the chip
+> marking, e.g. `25q127`). It sets up a 14MB filesystem; on a board with less flash, writes to
+> the filesystem wrap around to the start of the chip and overwrite the firmware itself
+> (recoverable by re-flashing in BOOTSEL mode). For other boards with the same "never boots"
+> symptom, see [Other boards](#other-boards-experimental).
+
 1. Hold BOOTSEL and plug the board into USB. An `RP2350` drive appears.
 2. Copy `firmware.uf2` to that drive.
 3. The board reboots and a serial port (`/dev/ttyACM0` on Linux) appears.
@@ -142,6 +149,23 @@ Not yet isolated:
 Side note: pico-sdk's `boot2_at25sf128a.S`, which also writes QE with `0x31`,
 sits in the RP2350 directory but uses RP2040 SSI registers, so it cannot be
 used on RP2350.
+
+## Other boards (experimental)
+
+Other RP2350 boards may fail to boot MicroPython for the same reason (a flash chip that is
+not reliable at 75MHz) without having 16MB of flash. For those, the safe experiment is the
+board's own MicroPython definition with only the flash clock lowered, keeping its flash size.
+
+| Board | Board definition | Test UF2 | Result |
+|---|---|---|---|
+| Cytron MOTION 2350 Pro (REV 2.0) | [`experimental/CYTRON_MOTION_2350_PRO_SLOWFLASH`](experimental/CYTRON_MOTION_2350_PRO_SLOWFLASH) — MicroPython's `CYTRON_MOTION_2350_PRO` with the flash clock at 37.5MHz (4MB flash / 1MB filesystem as in the official definition) | [cytron-test1](https://github.com/MobileFF/micropython-pico2-gd25q127c/releases/tag/cytron-test1) | waiting for a report |
+
+Build one the same way as the main board:
+
+```sh
+cd micropython/ports/rp2
+make BOARD_DIR=/path/to/micropython-pico2-gd25q127c/experimental/CYTRON_MOTION_2350_PRO_SLOWFLASH
+```
 
 ## Status
 

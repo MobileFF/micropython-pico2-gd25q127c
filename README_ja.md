@@ -89,6 +89,13 @@ MicroPython v1.29.0-preview で確認しています。
 
 ## 書き込み
 
+> [!WARNING]
+> このファームウェアは、フラッシュが本当に **16MB** あるボード（チップの印字が `25q127`
+> など）にだけ使ってください。ファイルシステムを 14MB 確保するため、フラッシュがもっと
+> 小さいボードでは、ファイルシステムへの書き込みがチップの先頭に折り返してファームウェア
+> 自体を上書きします（BOOTSEL モードで書き直せば復旧できます）。同じ「起動しない」症状の
+> ほかのボードは、[ほかのボード](#ほかのボード実験的)を参照してください。
+
 1. BOOTSEL ボタンを押しながら USB に接続する。`RP2350` ドライブが現れる。
 2. `firmware.uf2` をそのドライブにコピーする。
 3. ボードが再起動し、シリアルポート（Linux では `/dev/ttyACM0`）が現れる。
@@ -135,6 +142,24 @@ import os; s = os.statvfs('/'); print(s[0] * s[2] // 1024)
 
 補足: pico-sdk の `boot2_at25sf128a.S`（こちらも `0x31` で QE を設定する）は RP2350 用の
 ディレクトリにありますが、RP2040 の SSI レジスタを使っているため RP2350 では使えません。
+
+## ほかのボード（実験的）
+
+16MB のフラッシュを持たないほかの RP2350 ボードでも、同じ理由（75MHz では安定しない
+フラッシュチップ）で MicroPython が起動しないことがあります。その場合に安全に試せるのは、
+そのボード用の MicroPython のボード定義で、フラッシュの容量はそのままにクロックだけを
+下げたものです。
+
+| ボード | ボード定義 | テスト用 UF2 | 結果 |
+|---|---|---|---|
+| Cytron MOTION 2350 Pro（REV 2.0） | [`experimental/CYTRON_MOTION_2350_PRO_SLOWFLASH`](experimental/CYTRON_MOTION_2350_PRO_SLOWFLASH) — MicroPython の `CYTRON_MOTION_2350_PRO` のフラッシュのクロックを 37.5MHz にしたもの（フラッシュ 4MB／ファイルシステム 1MB は公式のまま） | [cytron-test1](https://github.com/MobileFF/micropython-pico2-gd25q127c/releases/tag/cytron-test1) | 報告待ち |
+
+ビルドの方法はメインのボードと同じです。
+
+```sh
+cd micropython/ports/rp2
+make BOARD_DIR=/path/to/micropython-pico2-gd25q127c/experimental/CYTRON_MOTION_2350_PRO_SLOWFLASH
+```
 
 ## 状況
 
