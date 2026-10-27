@@ -161,9 +161,10 @@ board's own MicroPython definition with just one setting changed, keeping its fl
 | Board | Board definition | Test UF2 | Result |
 |---|---|---|---|
 | Cytron MOTION 2350 Pro (REV 2.0) | [`experimental/CYTRON_MOTION_2350_PRO_SLOWFLASH`](experimental/CYTRON_MOTION_2350_PRO_SLOWFLASH) — MicroPython's `CYTRON_MOTION_2350_PRO` with the flash clock at 37.5MHz (4MB flash / 1MB filesystem as in the official definition) | [cytron-test1](https://github.com/MobileFF/micropython-pico2-gd25q127c/releases/tag/cytron-test1) | ✗ boots after flashing, not after a power cycle or reset button — the flash clock is not the cause on this board |
-| Cytron MOTION 2350 Pro (REV 2.0) | [`experimental/CYTRON_MOTION_2350_PRO_SLOWXOSC`](experimental/CYTRON_MOTION_2350_PRO_SLOWXOSC) — MicroPython's `CYTRON_MOTION_2350_PRO` with the crystal startup delay at x64 (as CircuitPython uses for this board); flash clock 75MHz | [cytron-test2](https://github.com/MobileFF/micropython-pico2-gd25q127c/releases/tag/cytron-test2) | waiting for a report |
+| Cytron MOTION 2350 Pro (REV 2.0) | [`experimental/CYTRON_MOTION_2350_PRO_SLOWXOSC`](experimental/CYTRON_MOTION_2350_PRO_SLOWXOSC) — MicroPython's `CYTRON_MOTION_2350_PRO` with the crystal startup delay at x64 (as CircuitPython uses for this board); flash clock 75MHz | [cytron-test2](https://github.com/MobileFF/micropython-pico2-gd25q127c/releases/tag/cytron-test2) | ✓ boots after every power cycle and reset button press (reported 2026-10-26) |
 
-Note: CircuitPython lists this board's flash as a 2MB W25Q16JV, while MicroPython's official
+So on this board the cause is the crystal startup delay, not the flash. Its flash is 2MB
+(the read-wrap test wraps at 2MB; CircuitPython lists a W25Q16JV), while MicroPython's official
 definition assumes 4MB.
 
 Build one the same way as the main board:
